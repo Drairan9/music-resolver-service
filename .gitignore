@@ -1,4 +1,5 @@
 .data
+auth.js
 # Logs
 logs
 *.log

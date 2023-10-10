@@ -11,3 +11,8 @@ export enum providerEnum {
     Soundcloud = 'soundcloud',
     Spotify = 'spotify',
 }
+
+export enum trackSearchTypeEnum {
+    Search = 'search',
+    Url = 'url',
+}
