@@ -1,5 +1,5 @@
 import express, { Request, Response, Router } from 'express';
-import play from 'play-dl';
+import SearchController from '../../controllers/v1/search_controller';
 
 export default class ApiRouter {
     public router: Router;
@@ -10,13 +10,6 @@ export default class ApiRouter {
     }
 
     private registerRoutes(): void {
-        this.router.get('/search', async (req, res) => {
-            const url = 'https://open.spotify.com/playlist/37i9dQZF1DWXRqgorJj26U';
-
-            const query_res = await play.spotify(url);
-            console.log(query_res);
-
-            res.status(200);
-        });
+        this.router.get('/search', new SearchController().search);
     }
 }
