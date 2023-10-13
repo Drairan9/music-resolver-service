@@ -1,7 +1,7 @@
 import { Response, Request } from 'express';
 import play, { Spotify, SpotifyPlaylist, so_validate, sp_validate, yt_validate } from 'play-dl';
 import SearchService from '../../services/search_service';
-import { providerEnum } from '../../utils/enums';
+import { musicEnum, providerEnum } from '../../utils/enums';
 import { TrackInfo } from '../../utils/types';
 
 export default class SearchController {
@@ -19,17 +19,16 @@ export default class SearchController {
         const queryInfo = await this._SearchService.resolveProvider(decodedQuery);
 
         let result: TrackInfo | TrackInfo[] | false = false;
+
         switch (queryInfo.provider) {
             case providerEnum.Youtube:
-                console.log('look at that');
+                result = await this.handleYoutubeQuery(queryInfo.type, decodedQuery);
                 break;
             case providerEnum.Spotify:
-                result = await this._SearchService.searchSpotify(decodedQuery);
-                console.log('look at that');
+                result = await this._SearchService.querySpotify(decodedQuery);
                 break;
             case providerEnum.Soundcloud:
-                result = await this._SearchService.searchSoundcloud(decodedQuery);
-                console.log('look at that');
+                result = await this._SearchService.querySoundcloud(decodedQuery);
                 break;
             default:
                 res.status(500).json({ message: 'Unexpected track provider.' });
@@ -40,6 +39,19 @@ export default class SearchController {
             return res.status(500).json({ message: "Service wasn't able to extract track info" });
         }
 
-        res.json(result); // https://www.youtube.com/watch?v=r4U7zPb5-ZM&list=RDr4U7zPb5-ZM&start_radio=1
+        res.json(result);
+    };
+
+    private handleYoutubeQuery = async (type: musicEnum, query: string): Promise<TrackInfo | TrackInfo[] | false> => {
+        switch (type) {
+            case musicEnum.Playlist:
+                return this._SearchService.queryYoutubePlaylist(query);
+            case musicEnum.Video:
+                return this._SearchService.queryYoutubeVideo(query);
+            case musicEnum.Search:
+                return this._SearchService.searchYoutubeVideo(query);
+            default:
+                return false;
+        }
     };
 }

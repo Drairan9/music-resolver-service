@@ -4,6 +4,9 @@ export enum musicEnum {
     Search = 'search',
     Track = 'track',
     Album = 'album',
+    // Always to deny
+    User = 'user',
+    Channel = 'channel',
 }
 
 export enum providerEnum {

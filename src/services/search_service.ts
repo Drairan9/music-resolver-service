@@ -6,6 +6,8 @@ import play, {
     SpotifyPlaylist,
     SoundCloudTrack,
     SoundCloudPlaylist,
+    YouTubeVideo,
+    YouTubePlayList,
 } from 'play-dl';
 import { musicEnum, providerEnum, trackSearchTypeEnum } from '../utils/enums';
 import { TrackInfo } from '../utils/types';
@@ -71,7 +73,7 @@ export default class SearchService {
 
     // spotify
 
-    public searchSpotify = async (url: string): Promise<TrackInfo | Array<TrackInfo> | false> => {
+    public querySpotify = async (url: string): Promise<TrackInfo | Array<TrackInfo> | false> => {
         try {
             if (play.is_expired()) await play.refreshToken();
 
@@ -85,7 +87,7 @@ export default class SearchService {
             const tracks = await spotifyResult.all_tracks();
             return tracks.map((track: SpotifyTrack) => this.mapSpotifyTrack(track));
         } catch (error) {
-            console.log('searchSpotify_service' + error);
+            console.log('querySpotify_service ' + error);
             return false;
         }
     };
@@ -103,12 +105,11 @@ export default class SearchService {
 
     // soundcloud
 
-    public searchSoundcloud = async (url: string): Promise<TrackInfo | Array<TrackInfo> | false> => {
+    public querySoundcloud = async (url: string): Promise<TrackInfo | Array<TrackInfo> | false> => {
         try {
-            if (play.is_expired()) await play.refreshToken();
-
             let soundcloudResult = await play.soundcloud(url);
-            // In case of 'user' so_validate returns false. So whole resolver redirect it to the youtube search.
+            if (soundcloudResult.type === musicEnum.User) return false;
+
             if (soundcloudResult.type === musicEnum.Track) {
                 return this.mapSoundcloudTrack(soundcloudResult as SoundCloudTrack);
             }
@@ -118,7 +119,7 @@ export default class SearchService {
             const tracks = await soundcloudResult.all_tracks();
             return tracks.map((track: SoundCloudTrack) => this.mapSoundcloudTrack(track));
         } catch (error) {
-            console.log('searchSoundcloud_service' + error);
+            console.log('querySoundcloud_service ' + error);
             return false;
         }
     };
@@ -128,6 +129,50 @@ export default class SearchService {
             name: audioTrack.name,
             url: audioTrack.url,
             thumbnail: audioTrack.thumbnail,
+            search_type: trackSearchTypeEnum.Url,
+        };
+    };
+
+    // youtube
+
+    public queryYoutubeVideo = async (url: string): Promise<TrackInfo | Array<TrackInfo> | false> => {
+        try {
+            const youtubeResult = (await play.video_info(url)).video_details;
+            if (youtubeResult.type === musicEnum.Channel) return false;
+
+            return this.mapYoutubeVideo(youtubeResult);
+        } catch (error) {
+            console.log('queryYoutubeVideo_service ' + error);
+            return false;
+        }
+    };
+
+    public queryYoutubePlaylist = async (url: string): Promise<TrackInfo | Array<TrackInfo> | false> => {
+        try {
+            const youtubeResult = await play.playlist_info(url, {
+                incomplete: true,
+            });
+            const videos = await youtubeResult.all_videos();
+
+            return videos.map((video: YouTubeVideo) => this.mapYoutubeVideo(video));
+        } catch (error) {
+            console.log('queryYoutubePlaylist_service ' + error);
+            return false;
+        }
+    };
+
+    public searchYoutubeVideo = async (query: string): Promise<TrackInfo | Array<TrackInfo> | false> => {
+        const youtubeResult = await play.search(query, {
+            limit: 1,
+        });
+        return this.mapYoutubeVideo(youtubeResult[0]);
+    };
+
+    private mapYoutubeVideo = (video: YouTubeVideo): TrackInfo => {
+        return {
+            name: video.title === undefined ? 'YouTube Video' : video.title,
+            url: video.url,
+            thumbnail: video.thumbnails[0].url,
             search_type: trackSearchTypeEnum.Url,
         };
     };
