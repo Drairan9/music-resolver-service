@@ -14,6 +14,7 @@ import { TrackInfo } from '../utils/types';
 
 export default class SearchService {
     public async resolveProvider(query: string): Promise<{ provider: providerEnum; type: musicEnum }> {
+        // use validate from playdl
         const youtubeResult = yt_validate(query);
         if (youtubeResult) {
             if (query.startsWith('https') && youtubeResult === musicEnum.Video) {
