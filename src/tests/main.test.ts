@@ -1,10 +1,17 @@
-import { SpotifyTrack } from 'play-dl';
+import play, { YouTubeVideo } from 'play-dl';
+jest.mock('play-dl');
 import SearchService from '../services/search_service';
+import { dummyYoutubeVideo } from './SearchService/const';
 
-function x(num: number) {
-    return num + num;
-}
+test('test youtube search', async () => {
+    jest.spyOn(play, 'search').mockResolvedValue([dummyYoutubeVideo]);
 
-test('testing', () => {
-    expect(x(1)).toBe(2);
+    const _SearchService = new SearchService();
+
+    expect(await _SearchService.searchYoutubeVideo('https://www.youtube.com/watch?v=WX_oe9hPuXk')).toMatchObject({
+        name: expect.any(String),
+        search_type: expect.any(String),
+        thumbnail: expect.any(String),
+        url: expect.any(String),
+    });
 });
