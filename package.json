@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "devWatch": "npx swc ./src -d ./dist -w --ignore ./tests",
-        "build": "npx swc ./src -d ./dist ",
+        "devWatch": "npx swc ./src -d ./dist -w",
+        "build": "npx swc ./src -d ./dist",
         "test": "jest"
     },
     "devDependencies": {
