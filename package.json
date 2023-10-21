@@ -2,7 +2,8 @@
     "scripts": {
         "devWatch": "npx swc ./src -d ./dist -w",
         "build": "npx swc ./src -d ./dist",
-        "test": "jest"
+        "test": "jest",
+        "testresolve": "jest ./src/tests/resolve_provider.test.ts"
     },
     "devDependencies": {
         "@swc/cli": "^0.1.62",
