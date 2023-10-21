@@ -1,44 +1,44 @@
 import play, { Spotify, SpotifyAlbum, SpotifyPlaylist, SpotifyTrack, YouTubeVideo } from 'play-dl';
 import { musicEnum } from '../../utils/enums';
 
-const search = async (x: any, y: any): Promise<any> => {
-    return new Promise((resolve, reject) => {
-        resolve([
-            new YouTubeVideo({
-                id: 'xxx',
-                url: `https://www.youtube.com/watch?v=xxx`,
-                title: 'xxx',
-                description: 'x',
-                duration: 0,
-                duration_raw: '0:00',
-                thumbnails: [
-                    {
-                        url: 'xxx',
-                        width: 2,
-                        height: 2,
-                    },
-                    {
-                        url: 'xxx',
-                        width: 2,
-                        height: 2,
-                    },
-                ],
-                channel: {
-                    id: 'xxx',
-                    name: 'xxx',
-                    url: `xxx`,
-                    icons: [],
-                    verified: true,
-                    artist: true,
-                },
-                uploadedAt: '2023-03-20T07:00:01-07:00',
-                upcoming: undefined,
-                views: 0,
-                live: false,
-            }),
-        ]);
-    });
-};
+// const search = async (x: any, y: any): Promise<any> => {
+//     return new Promise((resolve, reject) => {
+//         resolve([
+//             new YouTubeVideo({
+//                 id: 'xxx',
+//                 url: `https://www.youtube.com/watch?v=xxx`,
+//                 title: 'xxx',
+//                 description: 'x',
+//                 duration: 0,
+//                 duration_raw: '0:00',
+//                 thumbnails: [
+//                     {
+//                         url: 'xxx',
+//                         width: 2,
+//                         height: 2,
+//                     },
+//                     {
+//                         url: 'xxx',
+//                         width: 2,
+//                         height: 2,
+//                     },
+//                 ],
+//                 channel: {
+//                     id: 'xxx',
+//                     name: 'xxx',
+//                     url: `xxx`,
+//                     icons: [],
+//                     verified: true,
+//                     artist: true,
+//                 },
+//                 uploadedAt: '2023-03-20T07:00:01-07:00',
+//                 upcoming: undefined,
+//                 views: 0,
+//                 live: false,
+//             }),
+//         ]);
+//     });
+// };
 
 const so_validate = async (url: string): Promise<false | musicEnum> => {
     return new Promise((resolve, reject) => {
@@ -57,16 +57,8 @@ const so_validate = async (url: string): Promise<false | musicEnum> => {
     });
 };
 
-const is_expired = () => {
-    return false;
-};
-
-play.search = search;
-play.is_expired = is_expired;
-
 module.exports = {
     ...jest.requireActual('play-dl'),
-    search,
-    is_expired,
+    //search,
     so_validate,
 };
