@@ -1,7 +1,4 @@
 import play, {
-    yt_validate,
-    sp_validate,
-    so_validate,
     SpotifyTrack,
     SpotifyPlaylist,
     SoundCloudTrack,
@@ -16,65 +13,6 @@ import { musicEnum, providerEnum, trackSearchTypeEnum } from '../utils/enums';
 import { TrackInfo } from '../utils/types';
 
 export default class SearchService {
-    public async resolveProvider(query: string): Promise<{ provider: providerEnum; type: musicEnum }> {
-        // use validate from playdl
-        const youtubeResult = yt_validate(query);
-        if (youtubeResult) {
-            if (query.startsWith('https') && youtubeResult === musicEnum.Video) {
-                return { provider: providerEnum.Youtube, type: musicEnum.Video };
-            }
-            const mappedResultType: musicEnum = this.mapMusicTypeStringToEnum(youtubeResult);
-            if (mappedResultType === musicEnum.Search) {
-                return { provider: providerEnum.Youtube, type: musicEnum.Search };
-            }
-
-            return { provider: providerEnum.Youtube, type: mappedResultType };
-        }
-
-        const spotifyResult = sp_validate(query);
-        if (spotifyResult) {
-            if (spotifyResult === musicEnum.Search) {
-                return { provider: providerEnum.Youtube, type: musicEnum.Search };
-            }
-            const mappedResultType: musicEnum = this.mapMusicTypeStringToEnum(spotifyResult);
-            if (mappedResultType === musicEnum.Search) {
-                return { provider: providerEnum.Youtube, type: musicEnum.Search };
-            }
-            return { provider: providerEnum.Spotify, type: mappedResultType };
-        }
-
-        const soundcloudResult = await so_validate(query);
-        if (soundcloudResult) {
-            if (soundcloudResult === musicEnum.Search) {
-                return { provider: providerEnum.Youtube, type: musicEnum.Search };
-            }
-            const mappedResultType: musicEnum = this.mapMusicTypeStringToEnum(soundcloudResult);
-            if (mappedResultType === musicEnum.Search) {
-                return { provider: providerEnum.Youtube, type: musicEnum.Search };
-            }
-            return { provider: providerEnum.Soundcloud, type: mappedResultType };
-        }
-
-        return { provider: providerEnum.Youtube, type: musicEnum.Search };
-    }
-
-    private mapMusicTypeStringToEnum(provider: string): musicEnum {
-        switch (provider) {
-            case 'playlist':
-                return musicEnum.Playlist;
-            case 'video':
-                return musicEnum.Video;
-            case 'search':
-                return musicEnum.Search;
-            case 'track':
-                return musicEnum.Track;
-            case 'album':
-                return musicEnum.Album;
-            default:
-                return musicEnum.Search;
-        }
-    }
-
     // spotify
 
     public querySpotify = async (url: string): Promise<TrackInfo | Array<TrackInfo> | false> => {

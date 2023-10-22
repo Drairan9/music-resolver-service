@@ -1,14 +1,17 @@
 import { Response, Request } from 'express';
 import play, { Spotify, SpotifyPlaylist, so_validate, sp_validate, yt_validate } from 'play-dl';
 import SearchService from '../../services/search_service';
+import ResolveService from '../../services/resolve_service';
 import { musicEnum, providerEnum } from '../../utils/enums';
 import { TrackInfo } from '../../utils/types';
 
 export default class SearchController {
     private readonly _SearchService;
+    private readonly _ResolveService;
 
     constructor() {
         this._SearchService = new SearchService();
+        this._ResolveService = new ResolveService();
     }
 
     public search = async (req: Request, res: Response) => {
@@ -16,7 +19,7 @@ export default class SearchController {
         if (query === undefined) return res.status(400).json({ message: "Missing 'search_query' Parameter" });
 
         const decodedQuery = decodeURIComponent(query.toString());
-        const queryInfo = await this._SearchService.resolveProvider(decodedQuery);
+        const queryInfo = await this._ResolveService.getProvider(decodedQuery);
 
         let result: TrackInfo | TrackInfo[] | false = false;
 

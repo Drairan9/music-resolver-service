@@ -179,6 +179,6 @@ describe('Querying providers **ONLINE TEST**', () => {
                 thumbnail: expect.any(String),
                 url: expect.any(String),
             });
-        }, 15000);
+        }, 20000);
     });
 });

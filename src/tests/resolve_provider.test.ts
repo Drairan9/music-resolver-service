@@ -1,7 +1,7 @@
-import SearchService from '../services/search_service';
+import ResolveService from '../services/resolve_service';
 import { musicEnum, providerEnum } from '../utils/enums';
 
-const _SearchService = new SearchService();
+const _ResolveService = new ResolveService();
 
 describe('Resolving providers', () => {
     describe('Youtube provider', () => {
@@ -40,7 +40,7 @@ describe('Resolving providers', () => {
 
         for (let i = 0; i < tests.length; i++) {
             test(tests[i].name, async () => {
-                expect(await _SearchService.resolveProvider(tests[i].query)).toStrictEqual({
+                expect(await _ResolveService.getProvider(tests[i].query)).toStrictEqual({
                     provider: tests[i].provider,
                     type: tests[i].type,
                 });
@@ -78,7 +78,7 @@ describe('Resolving providers', () => {
 
         for (let i = 0; i < tests.length; i++) {
             test(tests[i].name, async () => {
-                expect(await _SearchService.resolveProvider(tests[i].query)).toStrictEqual({
+                expect(await _ResolveService.getProvider(tests[i].query)).toStrictEqual({
                     provider: tests[i].provider,
                     type: tests[i].type,
                 });
@@ -110,7 +110,7 @@ describe('Resolving providers', () => {
 
         for (let i = 0; i < tests.length; i++) {
             test(tests[i].name, async () => {
-                expect(await _SearchService.resolveProvider(tests[i].query)).toStrictEqual({
+                expect(await _ResolveService.getProvider(tests[i].query)).toStrictEqual({
                     provider: tests[i].provider,
                     type: tests[i].type,
                 });
