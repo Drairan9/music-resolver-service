@@ -25,3 +25,7 @@ class WebServer {
 
 const server = new WebServer();
 server.start();
+
+//TODO: Change search response to be always array
+//TODO: Youtube cookies rotation
+//TODO: Stream retrieving

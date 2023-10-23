@@ -42,7 +42,7 @@ export default class SearchController {
             return res.status(500).json({ message: "Service wasn't able to extract track info" });
         }
 
-        res.json(result);
+        res.status(200).json(result);
     };
 
     private handleYoutubeQuery = async (type: musicEnum, query: string): Promise<TrackInfo | TrackInfo[] | false> => {
