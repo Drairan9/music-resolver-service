@@ -1,5 +1,6 @@
 import express from 'express';
 import routes from './routes/index';
+import YoutubeCookieRotationWorker from './workers/youtubeCookieRotation';
 
 class WebServer {
     private app: express.Application;
@@ -20,6 +21,7 @@ class WebServer {
             console.log('Service started.');
             console.log(`Listening on port ${this.port}`);
         });
+        new YoutubeCookieRotationWorker();
     }
 }
 
