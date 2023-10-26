@@ -17,8 +17,9 @@ type Tcookie = {
  */
 export default class YoutubeCookieRotationWorker {
     // 10 minutes
-    private readonly ROTATION_INETRVAL = 2 * 60000;
+    private readonly ROTATION_INETRVAL = 10 * 60000;
     private youtubeData: TyoutubeDataOptions = { file: false };
+    private privateCookie: string = '';
 
     constructor() {
         if (!existsSync('.data/youtube.data')) {
@@ -26,7 +27,6 @@ export default class YoutubeCookieRotationWorker {
         }
         this.youtubeData = JSON.parse(readFileSync('.data/youtube.data', 'utf-8'));
         this.youtubeData.file = true;
-
         this.startWorker();
     }
 
@@ -60,9 +60,7 @@ export default class YoutubeCookieRotationWorker {
     };
 
     private uploadCookie = (): void => {
-        if (this.youtubeData.cookie && this.youtubeData.file) {
-            writeFileSync('.data/youtube.data', JSON.stringify(this.youtubeData, undefined, 4));
-        }
+        writeFileSync('.data/youtube.data', JSON.stringify(this.youtubeData, undefined, 4));
     };
 
     private getCookiesAsString = (): string | undefined => {
@@ -76,41 +74,50 @@ export default class YoutubeCookieRotationWorker {
 
     private requestCookieRotation = async (): Promise<Tcookie[] | false> => {
         const request: IncomingMessage = await new Promise((resolve, reject) => {
-            this.youtubeData = JSON.parse(readFileSync('.data/youtube.data', 'utf-8'));
             const req_options: RequestOptions = {
-                host: 'youtube.com',
-                path: `/watch?v=${this.generateRandomVideoId()}`,
+                host: 'accounts.youtube.com',
+                path: '/RotateCookies',
                 headers: {
+                    'content-type': 'application/json',
                     cookie: this.getCookiesAsString(),
                 },
-                method: 'GET',
+                method: 'POST',
             };
+            const post_data = '[null,"-8202410111774881648",1]';
             const req = requestHttps(req_options, resolve);
+            req.write(post_data);
             req.end();
+        });
+        if (request.statusCode !== 200) return false;
+
+        console.table({
+            ID: 'COOKIE ROTATION DEBUG',
+            STATUS: `${request.statusCode} - ${request.statusMessage}`,
+            TIMESTAMP: new Date().toLocaleString(),
         });
 
         const newCookies: string[] | undefined = request.headers['set-cookie'];
+        let splittedCookies: Tcookie[] = [];
+        console.log(newCookies);
         if (newCookies === undefined || newCookies.length < 1) return false;
-        return newCookies.map((cookie) => this.extractCookieFromString(cookie));
+
+        newCookies.forEach((cookie) => {
+            const extracted = this.extractCookiesFromString(cookie);
+            splittedCookies.push(...extracted);
+        });
+
+        return splittedCookies;
     };
 
-    private extractCookieFromString = (cookie: string): Tcookie => {
-        const cookieRoot: string = cookie.split(';')[0];
-        return {
-            key: cookieRoot.split('=')[0],
-            value: cookieRoot.substring(cookieRoot.indexOf('=') + 1),
-        };
-    };
-
-    private generateRandomVideoId = (): string => {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let randomId = '';
-
-        for (let i = 0; i < 11; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            randomId += characters.charAt(randomIndex);
-        }
-
-        return randomId;
+    private extractCookiesFromString = (cookie: string): Tcookie[] => {
+        const cookiesRoot: string[] = cookie.split(';');
+        const preparedCookies: Tcookie[] = [];
+        cookiesRoot.forEach((cookie) => {
+            preparedCookies.push({
+                key: cookie.split('=')[0],
+                value: cookie.substring(cookie.indexOf('=') + 1),
+            });
+        });
+        return preparedCookies;
     };
 }
