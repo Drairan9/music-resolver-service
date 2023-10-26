@@ -5,6 +5,10 @@ AIO Music resolving service used to request music data *with/without* audio stre
 
 This service is mainly build for NoraMusic2 but will be good choice for apps that need to quickly request song data or audio streams.
 
+Important
+======
+* Please use YouTube cookies from an account that you are not going to use later. And do not log out to avoid killing the session. For example, you can use a separate browser and a YouTube account that you do not plan to interrupt.
+
 Endpoints
 ======
 **<code>GET</code>**
