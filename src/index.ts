@@ -21,7 +21,7 @@ class WebServer {
             console.log('Service started.');
             console.log(`Listening on port ${this.port}`);
         });
-        new YoutubeCookieRotationWorker();
+        //new YoutubeCookieRotationWorker();
     }
 }
 
