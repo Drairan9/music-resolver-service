@@ -15,7 +15,6 @@ export default class YoutubeCookieRotationWorker {
     // 10 minutes
     private readonly ROTATION_INETRVAL = 10 * 60000;
     private youtubeData: TyoutubeDataOptions = { file: false };
-    private cookieString: string = '';
 
     constructor() {
         if (!existsSync('.data/youtube.data')) {
