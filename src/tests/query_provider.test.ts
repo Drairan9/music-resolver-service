@@ -10,12 +10,14 @@ describe('Querying providers **ONLINE TEST**', () => {
                 await _SearchService.querySpotify(
                     'https://open.spotify.com/track/2e9EZ2V5QGGZPMJacO3y0Y?si=b4b1d33bb4ef4b37'
                 )
-            ).toStrictEqual({
-                name: 'Waka Flocka Flame, Kebo Gotti - Grove St. Party (feat. Kebo Gotti)',
-                search_type: 'search',
-                thumbnail: 'https://i.scdn.co/image/fade577145599daff924bb7b28386a84f67bd1db',
-                url: null,
-            });
+            ).toStrictEqual([
+                {
+                    name: 'Waka Flocka Flame, Kebo Gotti - Grove St. Party (feat. Kebo Gotti)',
+                    search_type: 'search',
+                    thumbnail: 'https://i.scdn.co/image/fade577145599daff924bb7b28386a84f67bd1db',
+                    url: null,
+                },
+            ]);
         });
 
         test('Spotify playlist', async () => {
@@ -68,12 +70,14 @@ describe('Querying providers **ONLINE TEST**', () => {
 
     describe('Query Soundcloud', () => {
         test('Soundcloud track', async () => {
-            expect(await _SearchService.querySoundcloud('https://soundcloud.com/hexibase/oho')).toStrictEqual({
-                name: 'OhO',
-                search_type: 'url',
-                thumbnail: 'https://i1.sndcdn.com/artworks-NFAdcQtRWD3h1Ad8-YPCUUw-large.png',
-                url: 'https://api.soundcloud.com/tracks/929913478',
-            });
+            expect(await _SearchService.querySoundcloud('https://soundcloud.com/hexibase/oho')).toStrictEqual([
+                {
+                    name: 'OhO',
+                    search_type: 'url',
+                    thumbnail: 'https://i1.sndcdn.com/artworks-NFAdcQtRWD3h1Ad8-YPCUUw-large.png',
+                    url: 'https://api.soundcloud.com/tracks/929913478',
+                },
+            ]);
         });
 
         test('Soundcloud playlist', async () => {
@@ -93,12 +97,14 @@ describe('Querying providers **ONLINE TEST**', () => {
     describe('Query Youtube', () => {
         test('Youtube video', async () => {
             expect(await _SearchService.queryYoutubeVideo('https://www.youtube.com/watch?v=E_O8ygJZqxE')).toStrictEqual(
-                {
-                    name: 'Spinning dorito',
-                    search_type: 'url',
-                    thumbnail: expect.any(String),
-                    url: 'https://www.youtube.com/watch?v=E_O8ygJZqxE',
-                }
+                [
+                    {
+                        name: 'Spinning dorito',
+                        search_type: 'url',
+                        thumbnail: expect.any(String),
+                        url: 'https://www.youtube.com/watch?v=E_O8ygJZqxE',
+                    },
+                ]
             );
         });
 
@@ -160,12 +166,14 @@ describe('Querying providers **ONLINE TEST**', () => {
         });
 
         test('Youtube Search', async () => {
-            expect(await _SearchService.searchYoutubeVideo('Test query')).toStrictEqual({
-                name: expect.any(String),
-                search_type: 'url',
-                thumbnail: expect.any(String),
-                url: expect.any(String),
-            });
+            expect(await _SearchService.searchYoutubeVideo('Test query')).toStrictEqual([
+                {
+                    name: expect.any(String),
+                    search_type: 'url',
+                    thumbnail: expect.any(String),
+                    url: expect.any(String),
+                },
+            ]);
         });
 
         test('Youtube MIX playlist', async () => {
@@ -173,12 +181,16 @@ describe('Querying providers **ONLINE TEST**', () => {
                 await _SearchService.queryYoutubePlaylist(
                     'https://www.youtube.com/watch?v=nGZlDTtwp5w&list=RDnGZlDTtwp5w&start_radio=1'
                 )
-            ).toContainEqual({
-                name: expect.any(String),
-                search_type: 'url',
-                thumbnail: expect.any(String),
-                url: expect.any(String),
-            });
+            ).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        name: expect.any(String),
+                        search_type: 'url',
+                        thumbnail: expect.any(String),
+                        url: expect.any(String),
+                    }),
+                ])
+            );
         }, 20000);
     });
 });

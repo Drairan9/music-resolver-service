@@ -21,13 +21,11 @@ class WebServer {
             console.log('Service started.');
             console.log(`Listening on port ${this.port}`);
         });
-        //new YoutubeCookieRotationWorker();
+        new YoutubeCookieRotationWorker();
     }
 }
 
 const server = new WebServer();
 server.start();
 
-//TODO: Change search response to be always array
-//TODO: Youtube cookies rotation
 //TODO: Stream retrieving
