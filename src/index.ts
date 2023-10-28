@@ -27,5 +27,3 @@ class WebServer {
 
 const server = new WebServer();
 server.start();
-
-//TODO: Stream retrieving
